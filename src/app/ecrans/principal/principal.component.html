@@ -16,10 +16,35 @@
         class="serveur"
         [matTooltip]="serveur.nom"
         matTooltipPosition="right"
+        (click)="selectServeur(serveur)"
       >
         <img [attr.src]="serveur.urlLogo" />
       </div>
 
+      }
+    </div>
+  </aside>
+
+  <aside>
+    <div class="liste-salon">
+      @if (serveurSelectionne) {
+      <div class="serveur-selectionne">
+        <h6>{{ serveurSelectionne.nom }}</h6>
+      </div>
+
+      <div
+        class="salon"
+        [routerLink]="['/ajout-salon', serveurSelectionne._id]"
+      >
+        <button mat-button color="primary" class="ajout-salon">
+          Ajouter un salon
+        </button>
+      </div>
+
+      } @for (salon of listeSalon; track salon._id) {
+      <span class="nom-salon" (click)="selectSalon(salon)">
+        {{ salon.nom }}
+      </span>
       }
     </div>
     <div class="info-profil">
@@ -27,7 +52,7 @@
         class="avatar"
         src="https://play-lh.googleusercontent.com/0goocG7RJZDZ41ShfBPl-h7ctwHKHjqzn4nSImyL8_RWyXqeYNKw-CdGAKhgPGZG5Es"
       />
-      <span>John DOE</span>
+      <span>{{ utilisateurId }}</span>
       <mat-icon
         class="bouton-profil"
         fontIcon="settings"
@@ -36,37 +61,79 @@
     </div>
   </aside>
 
+  @if(!serveurSelectionne) {
+  <div class="message-serveur-selectionne">
+    <h6>Bienvenue, rejoignez un serveur existant ou créez-en un nouveau</h6>
+  </div>
+
+  } @else if(!salonSelectionne) {
+  <div class="message-salon-selectionne">
+    <h6>Sélectionnez un salon pour accéder à la conversation</h6>
+  </div>
+  }
+
   <div class="liste-message">
+    @for(message of listeMessage; track message._id) {
     <div class="message">
       <img
         class="avatar"
         src="https://play-lh.googleusercontent.com/0goocG7RJZDZ41ShfBPl-h7ctwHKHjqzn4nSImyL8_RWyXqeYNKw-CdGAKhgPGZG5Es"
       />
       <div class="partie-message">
-        <div class="utilisateur">John DOE</div>
+        <div class="utilisateur">{{ message.utilisateur.email }}</div>
         <p class="contenu">
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Alias iste
-          quasi odit quos reprehenderit repellendus natus quas consequatur
-          aliquam minima, sunt eum facere sit unde voluptatibus ullam neque
-          amet? Ipsam?
+          {{ message.contenu }}
         </p>
+        <p class="createdAt">{{ message.createdAt | date : "shortTime" }}</p>
       </div>
     </div>
+    }
 
-    <div class="message">
-      <img
-        class="avatar"
-        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRls5vfL2feg44afSnF6H2fS77qPl0V2phQg&s"
-      />
-      <div class="partie-message">
-        <div class="utilisateur">Tom SAWYER</div>
-        <p class="contenu">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos atque
-          iusto dolorem consequatur error! Itaque, nobis consequuntur veritatis
-          quibusdam sed illum, inventore officiis, et reprehenderit dicta dolor
-          earum dolorum laborum.
-        </p>
+    <aside class="liste-participants">
+      <div class="header-participants">
+        <h6>Participants</h6>
       </div>
-    </div>
+      <mat-list>
+        @for(participant of listeParticipants; track participant._id) {
+        <mat-list-item>
+          <div class="participant-info">
+            <h3 mat-line>{{ participant.email }}</h3>
+            @if(participant.email === emailDuCreateur) {
+            <p>(admin)</p>
+            }@else if(utilisateurId === emailDuCreateur) {
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="banParticipant(participant)"
+              matTooltip="Bannir le participant"
+              matTooltipPosition="right"
+            >
+              <mat-icon class="block-icon" fontIcon="block"></mat-icon>
+            </button>
+            }
+          </div>
+        </mat-list-item>
+        }
+      </mat-list>
+    </aside>
+
+    @if(salonSelectionne) {
+    <form
+      class="formulaire"
+      [formGroup]="formulaire"
+      (ngSubmit)="envoyerMessage()"
+    >
+      <div class="message-input">
+        <mat-form-field>
+          <input
+            matInput
+            placeholder="Entrez votre message"
+            formControlName="contenu"
+          />
+        </mat-form-field>
+        <button type="submit" mat-button color="primary">Envoyer</button>
+      </div>
+    </form>
+    }
   </div>
 </main>

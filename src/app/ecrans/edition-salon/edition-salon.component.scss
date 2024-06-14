@@ -1,0 +1,22 @@
+:host {
+    display: flex;
+  
+    div {
+      width: 50%;
+      padding: 2em;
+    }
+  
+  }
+  
+  form {
+    .actions {
+      display: flex;
+  
+      button {
+        margin-top: 2em;
+        margin-right: 2em;
+        width: 200px;
+      }
+    }
+  }
+  

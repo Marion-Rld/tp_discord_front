@@ -16,6 +16,7 @@ import { Serveur } from '../../models/serveur.type';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-edition-serveur',
@@ -81,6 +82,8 @@ export class EditionServeurComponent {
             duration: 3000,
           });
 
+          this.onRejoindreServeur(nouveauServeur as Serveur);
+
           this.router.navigateByUrl('/principal');
         });
     }
@@ -91,7 +94,9 @@ export class EditionServeurComponent {
 
     if (jwt) {
       this.http
-        .post('http://localhost:3000/rejoindre-serveur', serveur)
+        .post('http://localhost:3000/rejoindre-serveur', serveur, {
+          headers: { Authorization: 'Bearer ' + jwt },
+        })
         .subscribe((nouveauServeur) => {
           this.snackBar.open('Vous avez rejoins le serveur', undefined, {
             duration: 3000,

@@ -1,0 +1,34 @@
+<div>
+  <h3>Créer un nouveau Salon</h3>
+  <form class="formulaire" [formGroup]="formulaire" (ngSubmit)="onAjoutSalon()">
+    <mat-form-field>
+      <mat-label>Nom du salon</mat-label>
+      <input matInput placeholder="Ex. Général" formControlName="nom" />
+
+      @if(formulaire.get("nom")?.hasError("required")) {
+      <mat-error>Le nom du salon est obligatoire</mat-error>
+
+      } @else if (formulaire.get("nom")?.hasError("minlength")) {
+      <mat-error>Le nom du serveur doit avoir 3 caractères minimum</mat-error>
+
+      } @else if (formulaire.get("nom")?.hasError("maxlength")) {
+      <mat-error>Le nom du serveur doit avoir 50 caractères maximum</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="actions">
+      <button type="submit" mat-flat-button color="primary">
+        Ajouter le salon
+      </button>
+
+      <button
+        type="button"
+        mat-flat-button
+        color="accent"
+        routerLink="/principal"
+      >
+        Retour
+      </button>
+    </div>
+  </form>
+</div>
